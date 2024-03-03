@@ -40,10 +40,13 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1255, 700);
+            BackColor = Color.White;
+            ClientSize = new Size(400, 280);
             Name = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Snake";
             Load += MainForm_Load;
+            ResizeEnd += MainForm_ResizeEnd;
             KeyDown += MainForm_KeyDown;
             ResumeLayout(false);
         }

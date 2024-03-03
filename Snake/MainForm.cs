@@ -7,7 +7,7 @@ namespace Snake
         static bool locked = false;
         static MoveEnum? moveTo = null;
         static List<Label> lables = [];
-        static Label food;
+        static Label? food;
         public MainForm()
         {
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace Snake
                 locked = true;
 
             moveTo = temp;
-            snakeTimer.Interval = 100;
+            snakeTimer.Interval = 300;
             snakeTimer.Start();
         }
         Label CreateLable(int top, int left)
@@ -77,9 +77,11 @@ namespace Snake
                 if (lables.Any(p => p.Top == head.Top && p.Left == head.Left && p.GetHashCode() != head.GetHashCode()))
                     RefreshGame();
 
-                if (head.Top < 0 || head.Left < 0 || head.Left >= this.Width-20 || head.Top >= this.Height-20)
+                if (head.Top < 0 || head.Left < 0 || head.Left > this.DisplayRectangle.Width - 20 || head.Top > this.DisplayRectangle.Height - 20)
                     RefreshGame();
 
+                if (food is not null && head.Top == food.Top && head.Left == food.Left)
+                    Console.Beep();
 
             }
             if (lables.Any())
@@ -91,7 +93,6 @@ namespace Snake
                     food.BackColor = Color.Black;
                     lables.Add(food);
                     CreateFood();
-                    Console.Beep();
                 }
             }
             locked = false;
@@ -101,7 +102,7 @@ namespace Snake
         private void RefreshGame()
         {
             snakeTimer.Stop();
-            MessageBox.Show("you lose!");
+            MessageBox.Show("You lose. Close the message to reset the game!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             foreach (var item in lables)
                 Controls.Remove(item);
@@ -110,25 +111,34 @@ namespace Snake
             lables.Clear();
             moveTo = null;
             food = null;
-            MainForm_Load(null, null);
+            LoadGame();
             Text = "Snake";
 
         }
         private void CreateFood()
         {
             var random = new Random();
-            var rndleft = random.Next((this.Width - 20) / 20) * 20;
-            var rndTop = random.Next((this.Height - 20) / 20) * 20;
+            var rndleft = random.Next((this.DisplayRectangle.Width - 20) / 20) * 20;
+            var rndTop = random.Next((this.DisplayRectangle.Height - 20) / 20) * 20;
             food = CreateLable(rndTop, rndleft);
             food.BackColor = Color.Red;
             this.Controls.Add(food);
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void LoadGame()
         {
             lables.Add(CreateLable(200, 200));
             Controls.Add(lables[0]);
             CreateFood();
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            LoadGame();
+        }
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            Width = DisplayRectangle.Width - (DisplayRectangle.Width % 20) + Width - DisplayRectangle.Width;
+            Height = DisplayRectangle.Height - (DisplayRectangle.Height % 20) + Height - DisplayRectangle.Height;
         }
     }
     enum MoveEnum
