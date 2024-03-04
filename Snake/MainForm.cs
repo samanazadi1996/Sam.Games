@@ -127,12 +127,17 @@ namespace Snake
 
         private void LoadGame()
         {
-            lables.Add(CreateLable(200, 200));
+            var x = DisplayRectangle.Width / 2;
+            var y = DisplayRectangle.Height / 2;
+            x -= x % 20;
+            y -= y % 20;
+            lables.Add(CreateLable(y, x));
             Controls.Add(lables[0]);
             CreateFood();
         }
         private void MainForm_Load(object sender, EventArgs e)
         {
+            MainForm_ResizeEnd(sender, e);
             LoadGame();
         }
         private void MainForm_ResizeEnd(object sender, EventArgs e)
