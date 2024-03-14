@@ -1,0 +1,44 @@
+﻿@model Jadval.Application.Wrappers.PagedResponse<bool>
+
+@{
+    ViewData["Title"] = "Home Page";
+    var i = (Model.PageNumber - 1) * Model.PageSize;
+}
+
+<div class="row">
+    <div class="col-md-6 row m-auto">
+
+        @foreach (var item in Model.Data)
+        {
+            i++;
+
+            <div class="col-3 text-center form-group p-1">
+                @if (item)
+                {
+
+                    <form action="/Crossword/Play" method="post">
+                        <input value="@i" name="level" type="hidden">
+                        <button type="submit" class="btn btn-success btn-block">
+                            <br />
+                            ⭐
+                            <p>@(i)</p>
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-success btn-block" disabled>
+                        <br />
+                        🔒
+                        <p>@(i)</p>
+                    </button>
+                }
+            </div>
+        }
+    </div>
+
+</div>
+
+@section Scripts{
+
+}
